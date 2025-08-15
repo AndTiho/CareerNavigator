@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "careernavi"
+version = "0.1.0"
+description = ""
+authors = ["Andrei Tihomirov <moon200505@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
