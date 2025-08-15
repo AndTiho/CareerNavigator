@@ -1,10 +1,20 @@
+from abc import abstractmethod, ABC
 import requests
+
+class Parser(ABC):
+
+    @abstractmethod
+    def __init__(self, file_worker):
+        pass
+
+    @abstractmethod
+    def load_vacancies(self, keyword):
+        pass
 
 
 class HH(Parser):
     """
     Класс для работы с API HeadHunter
-    Класс Parser является родительским классом, который вам необходимо реализовать
     """
 
     def __init__(self, file_worker):
@@ -21,3 +31,6 @@ class HH(Parser):
             vacancies = response.json()['items']
             self.vacancies.extend(vacancies)
             self.params['page'] += 1
+
+    def __str__(self):
+        print(f'{self.vacancies}')
