@@ -14,7 +14,7 @@ class Vacancy:
 
         self.name = Vacancy.__validate_str(name)
 
-        if not self.is_valid_url(url):
+        if not self.__is_valid_url(url):
             raise ValueError("Неверный URL")
         self.url = url
 
@@ -59,7 +59,7 @@ class Vacancy:
 
 
     @staticmethod
-    def is_valid_url(url):
+    def __is_valid_url(url):
         from urllib.parse import urlparse
         try:
             result = urlparse(url)
@@ -76,12 +76,14 @@ class Vacancy:
 
     @staticmethod
     def salary_split(salary):
-        if not salary:
-            raise ValueError("Неверно задан параметр 'Зарплаты'")
-        salary_from_full = salary.split('-')[0].replace(' ', '')
-        salary_from = int(re.sub(r'\D', '', salary_from_full))
-        salary_to_full = salary.split('-')[1].replace(' ', '')
-        salary_to = int(re.sub(r'\D', '', salary_to_full))
-        if salary_from <= 0 and salary_to <= 0:
-            raise ValueError("Зарплата должна быть больше нуля")
-        return salary_from, salary_to
+        if Vacancy.__validate_str(salary):
+            try:
+                salary_from_full = salary.split('-')[0].replace(' ', '')
+                salary_from = int(re.sub(r'\D', '', salary_from_full))
+                salary_to_full = salary.split('-')[1].replace(' ', '')
+                salary_to = int(re.sub(r'\D', '', salary_to_full))
+                return salary_from, salary_to
+            except ValueError:
+                print('Не корректно задан параметр, значение зарплаты установлено 0')
+                return 0, 0
+        return None
