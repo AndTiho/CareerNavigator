@@ -1,3 +1,5 @@
+import json
+
 from src.work_with_api import HeadHunterAPI
 from src.work_with_vacanсy import Vacancy
 
@@ -36,4 +38,6 @@ vacancies_list = Vacancy.cast_to_object_list(hh_vacancies)
 #
 # if __name__ == "__main__":
 #     user_interaction()
-
+for i in vacancies_list:
+    print(i)
+    print('\n')
