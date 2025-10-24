@@ -4,15 +4,15 @@ from src.work_with_api import HeadHunterAPI
 from src.work_with_vacanсy import Vacancy
 
 hh_api = HeadHunterAPI()
-# #
-# # # Получение вакансий с hh.ru в формате JSON
+# # #
+# # # # Получение вакансий с hh.ru в формате JSON
 hh_vacancies = hh_api.get_vacancies("Python")
-# #
-# # # Преобразование набора данных из JSON в список объектов
+# # #
+# # # # Преобразование набора данных из JSON в список объектов
 vacancies_list = Vacancy.cast_to_object_list(hh_vacancies)
 #
 # # Пример работы контструктора класса с одной вакансией
-# vacancy = Vacancy("Python Developer", "https://api.hh.ru/employers/3166753", "100 000-150 000 руб.", "Требования: опыт работы от 3 лет...")
+vacancy = Vacancy("Python Developer", "https://api.hh.ru/employers/3166753", "100 000-150 000 руб.", "Требования: опыт работы от 3 лет...")
 #
 # # Сохранение информации о вакансиях в файл
 # json_saver = JSONSaver()
@@ -38,6 +38,5 @@ vacancies_list = Vacancy.cast_to_object_list(hh_vacancies)
 #
 # if __name__ == "__main__":
 #     user_interaction()
-for i in vacancies_list:
-    print(i)
-    print('\n')
+
+print(vacancy)
