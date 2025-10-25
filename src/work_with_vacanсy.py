@@ -109,33 +109,26 @@ class Vacancy:
     def salary_split(salary):
         if Vacancy.__validate_str(salary):
             try:
-                # Оставляем только цифры и дефисы
+
                 cleaned = re.sub(r'[^\d-]', '', salary)
-
-                # Разделяем по дефису
                 parts = cleaned.split('-')
-
-                # Фильтруем пустые строки
                 parts = [p for p in parts if p]
 
-                # Если осталась только одна часть, считаем это зарплатой "до"
                 if len(parts) == 1:
                     salary_from = int(parts[0])
-                    salary_to = salary_from  # или можно установить 0
+                    salary_to = salary_from
                     return salary_from, salary_to
 
-                # Если есть две и более частей
                 if len(parts) >= 2:
                     salary_from = int(parts[0])
                     salary_to = int(parts[-1])
                     return salary_from, salary_to
 
-                # Если вообще нет частей
-                raise ValueError("Недостаточно числовых значений")
+                raise ValueError('Недостаточно числовых значений')
 
             except ValueError as e:
-                print(f"Произошла ошибка: {e}")
-                print('Не корректно задан параметр, значение зарплаты установлено 0')
+                print(f'Произошла ошибка: {e}')
+                print('Значение зарплаты установлено 0')
                 return 0, 0
         return None
 
@@ -146,3 +139,11 @@ class Vacancy:
         if text is None:
             return ''
         return re.sub(r'<[^>]+>', '', text)
+
+    def to_dict(self) -> dict:
+        return {
+            "title": self.name,
+            "url": self.url,
+            "salary": {'from':self.salary_from, 'to': self.salary_to},
+            "description": self.requirement
+        }

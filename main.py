@@ -1,6 +1,7 @@
 import json
 
 from src.work_with_api import HeadHunterAPI
+from src.work_with_files import JSONSaver
 from src.work_with_vacanсy import Vacancy
 
 hh_api = HeadHunterAPI()
@@ -15,9 +16,9 @@ vacancies_list = Vacancy.cast_to_object_list(hh_vacancies)
 vacancy = Vacancy("Python Developer", "https://api.hh.ru/employers/3166753", "100 000-150 000 руб.", "Требования: опыт работы от 3 лет...")
 #
 # # Сохранение информации о вакансиях в файл
-# json_saver = JSONSaver()
-# json_saver.add_vacancy(vacancy)
-# json_saver.delete_vacancy(vacancy)
+json_saver = JSONSaver()
+json_saver.add_vacancy(vacancy)
+json_saver.delete_vacancy(vacancy)
 #
 # # Функция для взаимодействия с пользователем
 # def user_interaction():
@@ -39,4 +40,4 @@ vacancy = Vacancy("Python Developer", "https://api.hh.ru/employers/3166753", "10
 # if __name__ == "__main__":
 #     user_interaction()
 
-print(vacancy)
+
