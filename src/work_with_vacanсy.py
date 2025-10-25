@@ -6,7 +6,7 @@ class Vacancy:
     """ Класс занимается откровенной дичью. В его функционал входят:
     создание объекта 'Вакансия' который инициируются через имя, ссыль на вак, З/П, требования, задачи.
     """
-    def __init__(self, name, url, salary, requirement):
+    def __init__(self, name, url, salary, requirements):
         """Конструкт....не ну тут вроде понятно всё, кроме З/П собственно....
         З/П создана с учётом если указана строчная передача данных типа '100 000-150 000 руб.'-- эта дичь разбивается
         на две части по дефису, удаляет всё лишнее и закидывает ИНТЫ в две части ОТ и ДО. Почему?
@@ -20,7 +20,7 @@ class Vacancy:
 
         self.salary_from, self.salary_to = Vacancy.salary_split(salary)
 
-        self.requirement = Vacancy.__validate_str(self._clean_html(requirement)) if requirement is not None else ''
+        self.requirements = Vacancy.__validate_str(requirements)
 
     @property
     def amount(self):
@@ -68,23 +68,33 @@ class Vacancy:
 
                     formatted_salary = f"{salary_from} - {salary_to}"
 
-                    # Получаем требования и обязанности
+                    # Получение требований
                     snippet = item.get('snippet', {})
-                    requirement = snippet.get('requirement', '')
-                    responsibility = snippet.get('responsibility', '')
+                    raw_requirements = snippet.get('requirement', '')  # Получаем требования
 
+                    # Проверка на None и очистка HTML
+                    if raw_requirements is None:
+                        clean_requirements = ''
+                    else:
+                        clean_requirements = re.sub(r'<[^>]+>', '', raw_requirements)
+                        clean_requirements = clean_requirements.replace('\n', ' ').strip()
+
+                    # Создание объекта вакансии
                     vacancy = cls(
                         name=item.get('name', ''),
-                        url=item.get('url', ''),
+                        url=item.get('alternate_url', item.get('url', '')),
                         salary=formatted_salary,
-                        requirement=requirement
+                        requirements=clean_requirements
                     )
                     vacancy_list.append(vacancy)
                 except ValueError as e:
                     print(f"Ошибка при создании вакансии: {e}")
-
+                except Exception as e:
+                    print(f"Произошла ошибка: {e}")
         except json.JSONDecodeError:
             print("Ошибка при парсинге JSON данных")
+        except Exception as e:
+            print(f"Критическая ошибка: {e}")
 
         return vacancy_list
 
@@ -133,17 +143,17 @@ class Vacancy:
         return None
 
     def __str__(self):
-        return f'"{self.name}"\n"{self.url}"\n"{self.salary_from} - {self.salary_to}"\n"Требования: {self.requirement}"'
+        return f'"{self.name}"\n"{self.url}"\n"{self.salary_from} - {self.salary_to}"\n"Требования: {self.requirements}"'
 
-    def _clean_html(self, text):
-        if text is None:
-            return ''
-        return re.sub(r'<[^>]+>', '', text)
+    # def _clean_html(self, text):
+    #     if text is None:
+    #         return ''
+    #     return re.sub(r'<[^>]+>', '', text)
 
     def to_dict(self) -> dict:
         return {
-            "title": self.name,
+            "name": self.name,
             "url": self.url,
             "salary": {'from':self.salary_from, 'to': self.salary_to},
-            "description": self.requirement
+            "requirements": self.requirements
         }

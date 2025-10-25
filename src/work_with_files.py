@@ -40,7 +40,7 @@ class JSONSaver(AllToFiles):
     def add_vacancy(self, vacancy: Vacancy) -> None:
         """Добавляет вакансию в файл, избегая дубликатов"""
         if not any(v['url'] == vacancy.url for v in self._data):
-            self._data.append(vacancy.to_dict())
+            self._data.append(vacancy)
             self._save_to_file()
 
     def delete_vacancy(self, vacancy: Vacancy) -> None:

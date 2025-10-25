@@ -1,43 +1,80 @@
 import json
 
+from src.utils import parse_salary
 from src.work_with_api import HeadHunterAPI
-from src.work_with_files import JSONSaver
+# from src.work_with_files import JSONSaver
 from src.work_with_vacanсy import Vacancy
 
-hh_api = HeadHunterAPI()
-# # #
-# # # # Получение вакансий с hh.ru в формате JSON
-hh_vacancies = hh_api.get_vacancies("Python")
-# # #
-# # # # Преобразование набора данных из JSON в список объектов
-vacancies_list = Vacancy.cast_to_object_list(hh_vacancies)
-#
-# # Пример работы контструктора класса с одной вакансией
-vacancy = Vacancy("Python Developer", "https://api.hh.ru/employers/3166753", "100 000-150 000 руб.", "Требования: опыт работы от 3 лет...")
-#
-# # Сохранение информации о вакансиях в файл
-json_saver = JSONSaver()
-json_saver.add_vacancy(vacancy)
-json_saver.delete_vacancy(vacancy)
-#
-# # Функция для взаимодействия с пользователем
-# def user_interaction():
-#     platforms = ["HeadHunter"]
-#     search_query = input("Введите поисковый запрос: ")
-#     top_n = int(input("Введите количество вакансий для вывода в топ N: "))
-#     filter_words = input("Введите ключевые слова для фильтрации вакансий: ").split()
-#     salary_range = input("Введите диапазон зарплат: ") # Пример: 100000 - 150000
-#
-#     filtered_vacancies = filter_vacancies(vacancies_list, filter_words)
-#
-#     ranged_vacancies = get_vacancies_by_salary(filtered_vacancies, salary_range)
-#
-#     sorted_vacancies = sort_vacancies(ranged_vacancies)
-#     top_vacancies = get_top_vacancies(sorted_vacancies, top_n)
-#     print_vacancies(top_vacancies)
-#
-#
-# if __name__ == "__main__":
-#     user_interaction()
+
+def user_interaction():
+    print("Добро пожаловать в систему поиска вакансий!")
+
+    # Шаг 1: Ввод поискового запроса
+    search_query = 'Python' #input("Введите поисковый запрос для поиска вакансий: ")
+
+    hh_api = HeadHunterAPI()
+    hh_vacancies = hh_api.get_vacancies(search_query)
+    vacancies_list = Vacancy.cast_to_object_list(hh_vacancies)
+
+    vacancies = [vacancy.to_dict() for vacancy in vacancies_list]
+
+    # Шаг 2: Выбор действия
+    while True:
+        print("\nВыберите действие:")
+        print("1. Получить топ N вакансий по зарплате")
+        print("2. Найти вакансии по ключевому слову в описании")
+        print("3. Выйти")
+
+        choice = input("Ваш выбор: ")
+
+        if choice == '1':
+            try:
+                top_n = int(input("Введите количество вакансий для топа: "))
+                # Сортируем по зарплате в рублях
+                sorted_vacancies = sorted(
+                    vacancies,
+                    key=lambda x: parse_salary(x),
+                    reverse=True
+                )
+                print("\nТоп вакансий по зарплате в рублях:")
+                for vac in sorted_vacancies[:top_n]:
+                    salary_info = vac.get('salary', {})
+                    currency = salary_info.get('currency', 'RUB')
+                    print(f"Вакансия: {vac.get('name')}\n"
+                          f"Зарплата: {salary_info.get('from', 'не указана')} {currency}\n"
+                          f"URL: {vac.get('url')}\n"
+                          f"Требования: {vac.get('requirements')}\n"
+                      )
+            except ValueError:
+                print("Ошибка: введите число")
+
+        elif choice == '2':
+            keyword = input("Введите ключевое слово для поиска в описании: ")
+            filtered_vacancies = [
+                vac for vac in vacancies
+                if keyword.lower() in vac['requirements'].lower()
+            ]
+            print(f"\nНайдено {len(filtered_vacancies)} вакансий:")
+            for vac in filtered_vacancies:
+                salary_info = vac.get('salary', {})
+                currency = salary_info.get('currency', 'RUB')
+                print(f"Вакансия: {vac.get('name')}\n"
+                      f"Зарплата: {salary_info.get('from', 'не указана')} {currency}\n"
+                      f"URL: {vac.get('url')}\n"
+                      f"Требования: {vac.get('requirements')}\n"
+                      )
+
+        elif choice == '3':
+            print("До свидания!")
+            break
+
+        else:
+            print("Неверный выбор. Попробуйте еще раз.")
+
+
+
+
+if __name__ == "__main__":
+    user_interaction()
 
 
