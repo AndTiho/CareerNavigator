@@ -24,12 +24,12 @@ class JSONSaver(AllToFiles):
 
     def __init__(self, filename: str = "vacancies.json"):
         self._data_dir = "data"
-        self._filename = os.path.join(self._data_dir, filename)
+        self.__filename = os.path.join(self._data_dir, filename)
         self._data = []
 
     def _save_to_file(self) -> None:
         """Сохраняет данные в JSON-файл"""
-        with open(self._filename, 'w', encoding='utf-8') as file:
+        with open(self.__filename, 'a', encoding='utf-8') as file:
             json.dump(
                 self._data,
                 file,
