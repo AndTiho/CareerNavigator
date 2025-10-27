@@ -39,3 +39,4 @@ class HeadHunterAPI(Parser):
     def get_vacancies(self, keyword):
         self._load_vacancies(keyword)
         return json.dumps(self.__vacancies)
+
