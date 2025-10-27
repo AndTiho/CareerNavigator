@@ -1,0 +1,11 @@
+[
+    {
+        "name": "Тестировщик",
+        "url": "https://test.com",
+        "salary": {
+            "from": 100000,
+            "to": 100000
+        },
+        "requirements": "Опыт от 1 года"
+    }
+]

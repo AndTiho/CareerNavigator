@@ -16,7 +16,7 @@ def parse_salary(vacancy: dict) -> int | float:
 
             # Добавляем курс для UZS
             exchange_rates = {
-                'RUB': 0.0085  # пример курса узбекского сума к рублю
+                'UZS': 0.0085  # пример курса узбекского сума к рублю
             }
 
             rate = exchange_rates.get(currency, 1)
@@ -34,7 +34,7 @@ def parse_salary(vacancy: dict) -> int | float:
                 return 0
 
             exchange_rates = {
-                'RUB': 0.0085  # добавляем курс для UZS
+                'UZS': 0.0085  # добавляем курс для UZS
             }
 
             rate = exchange_rates.get(currency, 1)

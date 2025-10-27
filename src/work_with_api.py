@@ -5,7 +5,7 @@ import requests
 class Parser(ABC):
 
     @abstractmethod
-    def __load_vacancies(self,keyword):
+    def _load_vacancies(self,keyword):
         pass
 
     @abstractmethod
@@ -24,7 +24,7 @@ class HeadHunterAPI(Parser):
         self.__params = {'text': '', 'page': 0, 'per_page': 100}
         self.__vacancies = []
 
-    def __load_vacancies(self, keyword):
+    def _load_vacancies(self, keyword):
         self.__params['text'] = keyword
         while self.__params.get('page') != 20:
             response = requests.get(self.__url, headers=self.__headers, params=self.__params)
@@ -37,5 +37,5 @@ class HeadHunterAPI(Parser):
 
 
     def get_vacancies(self, keyword):
-        self.__load_vacancies(keyword)
+        self._load_vacancies(keyword)
         return json.dumps(self.__vacancies)

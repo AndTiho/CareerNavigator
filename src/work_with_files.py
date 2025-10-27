@@ -31,21 +31,32 @@ class JSONSaver(AllToFiles):
         """Сохраняет данные в JSON-файл"""
         with open(self.__filename, 'a', encoding='utf-8') as file:
             json.dump(
-                self._data,
+                [v.to_dict() for v in self._data],
                 file,
                 ensure_ascii=False,
                 indent=4
             )
 
+
+    # def _save_to_file(self) -> None:
+    #     """Сохраняет данные в JSON-файл"""
+    #     with open(self.__filename, 'a', encoding='utf-8') as file:
+    #         json.dump(
+    #             self._data,
+    #             file,
+    #             ensure_ascii=False,
+    #             indent=4
+    #         )
+
     def add_vacancy(self, vacancy: Vacancy) -> None:
         """Добавляет вакансию в файл, избегая дубликатов"""
-        if not any(v['url'] == vacancy.url for v in self._data):
+        if not any(v.url == vacancy.url for v in self._data):
             self._data.append(vacancy)
             self._save_to_file()
 
     def delete_vacancy(self, vacancy: Vacancy) -> None:
         """Удаляет вакансию по URL"""
-        self._data = [v for v in self._data if v['url'] != vacancy.url]
+        self._data = [v for v in self._data if v.url != vacancy.url]
         self._save_to_file()
 
 

@@ -1,5 +1,6 @@
 import json
 import re
+from urllib.parse import urlparse
 
 
 class Vacancy:
@@ -103,10 +104,30 @@ class Vacancy:
 
     @staticmethod
     def __is_valid_url(url):
-        from urllib.parse import urlparse
         try:
             result = urlparse(url)
-            return all([result.scheme, result.netloc])
+            # Базовая проверка схемы и сетевого расположения
+            if not result.scheme or not result.netloc:
+                return False
+
+            # Проверка схемы на допустимые значения
+            if result.scheme not in ['http', 'https']:
+                return False
+
+            # Регулярное выражение для проверки формата домена
+            domain_regex = re.compile(
+                r'^(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$'
+            )
+
+            # Проверка домена
+            if not domain_regex.match(result.netloc.split(':')[0]):
+                return False
+
+            # Проверка на пробелы в URL
+            if ' ' in url:
+                return False
+
+            return True
         except ValueError:
             return False
 
@@ -147,10 +168,6 @@ class Vacancy:
     def __str__(self):
         return f'"{self.name}"\n"{self.url}"\n"{self.salary_from} - {self.salary_to}"\n"Требования: {self.requirements}"'
 
-    # def _clean_html(self, text):
-    #     if text is None:
-    #         return ''
-    #     return re.sub(r'<[^>]+>', '', text)
 
     def to_dict(self) -> dict:
         return {
