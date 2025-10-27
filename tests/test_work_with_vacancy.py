@@ -1,7 +1,5 @@
-
 import pytest
-import json
-import re
+
 from src.work_with_vacanсy import Vacancy
 
 
@@ -10,7 +8,7 @@ def test_vacancy_creation():
         name="Python Developer",
         url="https://hh.ru/vacancy/123",
         salary="100000-150000",
-        requirements="Опыт работы от 2 лет"
+        requirements="Опыт работы от 2 лет",
     )
 
     assert vacancy.name == "Python Developer"
@@ -22,17 +20,19 @@ def test_vacancy_creation():
 
 # Тест парсинга зарплаты
 
+
 def test_salary_split():
     # Проверяем разные варианты входных данных
     assert Vacancy.salary_split("100000-150000") == (100000, 150000)  # Обычный случай
-    assert Vacancy.salary_split("100000") == (100000, 100000)         # Только нижняя граница
-    assert Vacancy.salary_split("100000-") == (100000, 100000)        # Нижняя граница с дефисом
-    assert Vacancy.salary_split("-150000") == (150000, 150000)            # Только верхняя граница
+    assert Vacancy.salary_split("100000") == (100000, 100000)  # Только нижняя граница
+    assert Vacancy.salary_split("100000-") == (100000, 100000)  # Нижняя граница с дефисом
+    assert Vacancy.salary_split("-150000") == (150000, 150000)  # Только верхняя граница
     assert Vacancy.salary_split("100000-200000-300000") == (100000, 300000)  # Несколько дефисов
-    assert Vacancy.salary_split("100000 руб.") == (100000, 100000)    # С текстом
+    assert Vacancy.salary_split("100000 руб.") == (100000, 100000)  # С текстом
 
 
 # Тест сравнения зарплат
+
 
 def test_salary_comparison():
     # Используем валидный URL
@@ -53,7 +53,7 @@ def test_invalid_url():
 
 # Тест парсинга JSON
 def test_cast_to_object_list():
-    json_data = '''
+    json_data = """
     [
         {
             "name": "Тестировщик",
@@ -62,7 +62,7 @@ def test_cast_to_object_list():
             "snippet": {"requirement": "<b>Опыт от 1 года</b>"}
         }
     ]
-    '''
+    """
 
     vacancies = Vacancy.cast_to_object_list(json_data)
     assert len(vacancies) == 1
@@ -80,14 +80,14 @@ def test_to_dict():
         name="Python Developer",
         url="https://hh.ru/vacancy/123",
         salary="100000-150000",
-        requirements="Опыт работы от 2 лет"
+        requirements="Опыт работы от 2 лет",
     )
 
     expected_dict = {
         "name": "Python Developer",
         "url": "https://hh.ru/vacancy/123",
         "salary": {"from": 100000, "to": 150000},
-        "requirements": "Опыт работы от 2 лет"
+        "requirements": "Опыт работы от 2 лет",
     }
 
     assert vacancy.to_dict() == expected_dict
@@ -115,9 +115,11 @@ def test_json_errors():
         # Нечисловое значение
         '{"name": "Test", "url": "https://example.com", "salary": {"from": 100000, "to": "abc"}}',
         # Нечисловое значение
-        '{"name": "Test", "url": "https://example.com", "salary": {"from": 100000, "to": 150000}, "snippet": {"requirement": null}}',
+        '{"name": "Test", "url": "https://example.com", "salary": {"from": 100000, "to": 150000},'
+        ' "snippet": {"requirement": null}}',
         # Null в требованиях
-        '{"name": "Test", "url": "https://example.com", "salary": {"from": 100000, "to": 150000}, "snippet": {"requirement": 123}}'
+        '{"name": "Test", "url": "https://example.com", "salary": {"from": 100000, "to": 150000},'
+        ' "snippet": {"requirement": 123}}',
         # Нестроковое значение в требованиях
     ]
 
@@ -139,7 +141,7 @@ def test_invalid_urls():
         "http:/example.com",  # Отсутствует слэш
         "http://.com",  # Неверное доменное имя
         "http://example..com",  # Двойное точка
-        "http://example.com/path with spaces"  # Пробелы
+        "http://example.com/path with spaces",  # Пробелы
     ]
 
     for url in invalid_urls:
@@ -156,7 +158,7 @@ def test_valid_urls():
         "https://example.com",
         "http://example.com",
         "http://example.com:80/path?query=string#fragment",
-        "http://example.com/path?query=string#fragment"
+        "http://example.com/path?query=string#fragment",
     ]
 
     for url in valid_urls:
@@ -166,10 +168,7 @@ def test_valid_urls():
 
 def test_edge_cases():
     # Проверяем граничные случаи
-    edge_cases = [
-        "http://localhost",  # Локальный хост
-        "http://192.168.1.1"  # IP-адрес
-    ]
+    edge_cases = ["http://localhost", "http://192.168.1.1"]  # Локальный хост  # IP-адрес
 
     for url in edge_cases:
         try:

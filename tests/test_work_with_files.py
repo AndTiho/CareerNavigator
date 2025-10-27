@@ -1,10 +1,9 @@
 import os
+
 import pytest
-import json
 
 from src.work_with_files import JSONSaver
 from src.work_with_vacanсy import Vacancy
-
 
 # Создаем тестовые вакансии
 vacancy1 = Vacancy("Тестировщик", "https://test.com", "100000", "Опыт от 1 года")

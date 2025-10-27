@@ -1,8 +1,6 @@
+from unittest.mock import MagicMock, patch
 
 import pytest
-import requests
-import json
-from unittest.mock import patch, MagicMock
 
 from src.work_with_api import HeadHunterAPI
 
@@ -15,13 +13,13 @@ def hh_parser():
 
 def test_init_params(hh_parser):
     # Проверяем URL
-    assert hh_parser._HeadHunterAPI__url == 'https://api.hh.ru/vacancies'
+    assert hh_parser._HeadHunterAPI__url == "https://api.hh.ru/vacancies"
 
     # Проверяем headers
-    assert hh_parser._HeadHunterAPI__headers == {'User-Agent': 'HH-User-Agent'}
+    assert hh_parser._HeadHunterAPI__headers == {"User-Agent": "HH-User-Agent"}
 
     # Проверяем параметры запроса
-    assert hh_parser._HeadHunterAPI__params == {'text': '', 'page': 0, 'per_page': 100}
+    assert hh_parser._HeadHunterAPI__params == {"text": "", "page": 0, "per_page": 100}
 
     # Проверяем пустой список вакансий
     assert hh_parser._HeadHunterAPI__vacancies == []
@@ -51,7 +49,7 @@ def test_init_params(hh_parser):
 #     assert hh_parser._HeadHunterAPI__vacancies == [{'id': 1}, {'id': 2}]
 #
 #
-@patch('requests.get')
+@patch("requests.get")
 def test_load_vacancies_error(mock_get, hh_parser):
     # Создаем ответ с ошибкой
     mock_response = MagicMock()
@@ -61,9 +59,7 @@ def test_load_vacancies_error(mock_get, hh_parser):
 
     # Проверяем, что поднимается исключение
     with pytest.raises(Exception) as excinfo:
-        hh_parser._load_vacancies('Python')
+        hh_parser._load_vacancies("Python")
 
     # Проверяем сообщение об ошибке
     assert str(excinfo.value) == "Ошибка при подключении к API: 404"
-
-
